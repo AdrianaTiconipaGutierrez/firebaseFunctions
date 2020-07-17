@@ -10,28 +10,28 @@ const fs = require('fs');
 const sharp = require('sharp');
 
 exports.onCreateStars = functions.firestore
-.document('products/{productId}')
-.onCreate((snap, context) => {
+    .document('products/{productId}')
+    .onCreate((snap, context) => {
 
-    const newProduct = snap.data();
-    const productId = context.params.productId;
+        const newProduct = snap.data();
+        const productId = context.params.productId;
 
-  
-    console.log(`****ID NEW PRODUCT ${productId}`);
-    console.log(newProduct);
 
-    if (newProduct) {
-        const titleProduct = newProduct.titleProduct;
-        const starsProduct=newProduct.starsProduct;
-        
-        const titleProductUpper = changeToUpperCase(titleProduct);
-        const starsProductEmojin=  changeToEmojin(starsProduct);
-        return snap.ref.update({ titleProduct: titleProductUpper, starsProduct: starsProductEmojin });
-    }
-    else {
-        return null;
-    }
-});
+        console.log(`****ID NEW PRODUCT ${productId}`);
+        console.log(newProduct);
+
+        if (newProduct) {
+            const titleProduct = newProduct.titleProduct;
+            const starsProduct = newProduct.starsProduct;
+
+            const titleProductUpper = changeToUpperCase(titleProduct);
+            const starsProductEmojin = changeToEmojin(starsProduct);
+            return snap.ref.update({ titleProduct: titleProductUpper, starsProduct: starsProductEmojin });
+        }
+        else {
+            return null;
+        }
+    });
 
 //OPTIMIZAR IMAGENES
 exports.onFinalizeOptimizeImage = functions.storage
@@ -47,14 +47,13 @@ exports.onFinalizeOptimizeImage = functions.storage
         if (!contentType.startsWith('image/')) {
             return console.log('This is not an image.');
         }
-
         // Get the file name.
         const fileName = path.basename(filePath);
         console.log(`*************FILE NAME:${fileName}`)
         // Exit if the image is already a thumbnail.
-        //or i can use if fileName.includes(_thumb..)
+        //or i can use if fileName.includes(thumb..)
         if (fileName.startsWith('thumb_')) {
-            return console.log('Already a Thumbnail.');
+            return console.log('It is already a Thumbnail.');
         }
 
         // Download file from bucket.
@@ -63,7 +62,6 @@ exports.onFinalizeOptimizeImage = functions.storage
         const bucket = admin.storage().bucket(fileBucket);
         const tempFilePath = path.join(os.tmpdir(), fileName);///tmp/2.png
         console.log(`************** bucket: ${bucket} tempFilePath: ${tempFilePath}`);
-
         const metadata = {
             contentType: contentType,
         };
@@ -73,35 +71,18 @@ exports.onFinalizeOptimizeImage = functions.storage
         // await spawn('convert', [tempFilePath, '-thumbnail', '200x200>', tempFilePath]);
         // console.log('Thumbnail created at', tempFilePath);
 
-
         // We add a 'thumb_' prefix to thumbnails file name. That's where we'll upload the thumbnail.
-        const thumbFileName = `thumb_${fileName}`;//thumb_2.png
-
+        const thumbFileName = `thumb_${fileName}`;
         const tempThumbFilePath = path.join(os.tmpdir(), thumbFileName);
         const thumbFilePath = path.join(path.dirname(filePath), thumbFileName);
-        //const thumbFilePath = path.join(path.dirname(filePath), thumbFileName);
-        console.log(`************PRUEBA JOIN....${path.dirname(filePath)}`)
-        console.log(`************PRUEBA JOIN....${thumbFileName}`)
-        console.log(`************PRUEBA JOIN....${thumbFilePath}`)
 
-        //image==> duirname and  2.png ==.basename ==> 
-        // Uploading the thumbnail.
-
-        //GENERATE A THUMBAIL USING SHARP
-
-        // const thumbName = `thumb@$_${fileName}`;
-        // const thumbPath = path.join(path.dirname(filePath), thumbName);
-        
-
+        //we resize the image with sharp
         await sharp(tempFilePath)
-            .resize(200)
+            .resize(500)
             .toFile(tempThumbFilePath);
+        // we optimize the image in the temporary route
 
-        // await bucket.upload(tempFilePath, {
-        //     destination: thumbFilePath,
-        //     metadata: metadata,
-        // });
-
+        console.log('optimize jpg and png, done!');
         await bucket.upload(tempThumbFilePath, {
             destination: thumbFilePath,
             metadata: metadata,
@@ -111,29 +92,24 @@ exports.onFinalizeOptimizeImage = functions.storage
 
     });
 
-
-
-
-
-
 function modif(text) {
-  const x = '1234';
-  const y = text.replace(x, "cheese").toUpperCase();
-  return y;
+    const x = '1234';
+    const y = text.replace(x, "cheese").toUpperCase();
+    return y;
 }
 
 
 function changeToUpperCase(text) {
     return text.toUpperCase();
-  }
+}
 
 function changeToEmojin(text) {
-  cantStars = text.match(/[0-9]+/g)[0];
-  cantStars = parseInt(cantStars);
-  stars = '';
-  for (i = 0; i < cantStars; i++) {
-      stars = '⭐' + stars;
-  }
-  return text.replace(/[0-9]+/g, stars);
+    cantStars = text.match(/[0-9]+/g)[0];
+    cantStars = parseInt(cantStars);
+    stars = '';
+    for (i = 0; i < cantStars; i++) {
+        stars = '⭐' + stars;
+    }
+    return text.replace(/[0-9]+/g, stars);
 }
 
