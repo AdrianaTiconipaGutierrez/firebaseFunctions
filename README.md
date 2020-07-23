@@ -1,3 +1,5 @@
+![112](https://user-images.githubusercontent.com/39227411/88244023-5ac4e000-cc60-11ea-8294-75911f40ba99.PNG)
+
 # CLOUD FUNCTIONS
 ```
 git status
@@ -17,15 +19,6 @@ git status
 Cloud Functions para Firebase es un framework sin servidores que te permite ejecutar de forma automática el código de backend en respuesta a las solicitudes HTTPS. Tu código JavaScript o TypeScript se almacena en la nube de Google y se ejecuta en un entorno administrado. No necesitas administrar ni escalar tus propios servidores.
 
 [Cloud Functions para firebase](https://firebase.google.com/docs/functions) 
-
-
-## RUTA DE IMPLEMENTACION
-
-### CONFIGURA CLOUD FUNCTIONS
-
-### ESCRIBE FUNCIONES
-
-### IMPLEMETA Y SUPERVISA
 
 ##  ¿QUE PODEMOS HACER CON CLOUD FUNCTIONS?
 
@@ -72,6 +65,7 @@ Otros casos: enviar correos elctronicos de confirmación, bienvenida,o sms!
 
 ## TRABAJAREMOS CON FIRESTORE Y STORAGE
 
+## RUTA DE IMPLEMENTACION
 
 # EMPEZEMOS CON FUNCTIONS!
 
@@ -99,34 +93,39 @@ Para instalar la CLI, debe tener instalado npm, que generalmente viene con NodeJ
 
 Para instalar o actualizar la CLI, ejecute el siguiente comando npm:
 
-### npm install -g firebase-tools
-
+```
+npm install -g firebase-tools
+```
 Esto instala el comando firebase disponible de manera global.
 
 Para verificar que la CLI se haya instalado correctamente, abra una consola y ejecute:
 
-### firebase --version
-
+```
+firebase --version
+```
 Asegúrese de que la versión de Firebase CLI esté por encima de 4.0.0 para que tenga todas las funciones más recientes requeridas para Cloud Functions. 
 
 Autorice la CLI de Firebase ejecutando:
 
-### firebase login
+```
+firebase login
+```
 
 Asegúrate de estar en el directorio ProyectoAngularFirebase y luego configura Firebase CLI para usar tu Firebase Project:
-
-### firebase use --add
-
+```
+firebase use --add
+```
 Luego seleccione su ID de proyecto y siga las instrucciones. Cuando se le solicite, puede elegir cualquier Alias, como studyjam, por ejemplo.
 
 ## DIRECTORIO FUNCTIONS
+
 Cloud Functions le permite tener fácilmente código que se ejecuta en la nube sin tener que configurar un servidor. Le mostraremos cómo crear funciones que reaccionen a los eventos de Firestore y Cloud Storage.
 
 Al usar Firebase SDK para Cloud Functions, su código de Funciones estará en el directorio de funciones. Su código de Funciones también es una aplicación Node.js y, por lo tanto, necesita un paquete.json que brinde información sobre su aplicación y enumere las dependencias.
-
-### cd functions
-### ls
-
+```
+cd functions
+ls
+```
 El archivo package.json ya enumera dos dependencias requeridas: Firebase SDK para Cloud Functions y Firebase Admin SDK. Para instalarlos localmente, ejecute npm install desde la carpeta de functions:
 
 ### npm install
@@ -205,7 +204,26 @@ Agregue la función ................  en su archivo index.js:
 
 
 
-## MODIFICAR IMAGEN TAMAñO
+# MODIFICAR IMAGEN TAMAñO
+
+## DEPENDENCIAS
+Debemos instalar 
+
+Necesitamos [google-cloud/storage](https://www.npmjs.com/package/@google-cloud/storage)
+```
+npm install @google-cloud/storage
+```
+Para modificar la imagen [sharp](https://sharp.pixelplumbing.com/)
+```
+npm install sharp
+```
+npm install fs-extra
+[fs-extra](https://www.npmjs.com/package/fs-extra)
+```
+
+```
+
+
 
 Por lo tanto la primera función en la nube sera para reconocer ....
 
