@@ -79,7 +79,8 @@ Otros casos: enviar correos elctronicos de confirmación, bienvenida,o sms!
 
 1. En Firebase console, haz clic en Agregar proyecto y selecciona o ingresa el Nombre del proyecto, y continuar.
 
-[Firebase Consola](`[Firebase consola](https://console.firebase.google.com/?pli=1) `) 
+[Firebase Consola](`[Firebase consola](https://console.firebase.google.com/?pli=1)`) 
+[a](https://console.firebase.google.com/?pli=1)
 
 2. Configura Google Analytics para tu proyecto (opcional).
 3. Crear Proyecto
