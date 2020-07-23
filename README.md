@@ -3,6 +3,7 @@ Cloud Functions para Firebase es un framework sin servidores que te permite ejec
 
 [Cloud Functions para firebase](https://firebase.google.com/docs/functions) 
 
+
 ##  ¿QUE PODEMOS HACER CON CLOUD FUNCTIONS?
 
 ### Ejecuta la limpieza y el mantenimiento de la base de datos.
@@ -70,6 +71,16 @@ Pasos a seguir....
 La interfaz de línea de comandos de Firebase (CLI) le permitirá servir la aplicación web localmente e implementar su aplicación web y las funciones de la nube.
 ### REQUERIMIENTOS
 
+-------
+**REQUERIMIENTOS:**
+
+- IDE TEXT editor
+- Terminal para ejecutar comandos de shell con NODEJS v8 or 10
+- Reposirorio 
+Las versiones 8 y 10 de Node.js son compatibles. 
+ ### Clonar el projecto
+ ### git clone https://github.com/firebase/friendlychat
+-----
 Para utilizar cloud Functions es necesario   instalara Node Js.  Node.js > 8
 
 ```diff
@@ -94,6 +105,12 @@ firebase --version
 + Asegúrese de que la versión de Firebase CLI esté por encima de 4.0.0 para que tenga todas las funciones más recientes requeridas para Cloud Functions. 
 ```
 Autorice la CLI de Firebase ejecutando:
+### Inicializa el SDK de Firebase para Cloud Functions
+
+Para inicializar tu proyecto, haz lo siguiente:
+
+- Ejecuta firebase login para acceder a través del navegador y autenticar la herramienta de Firebase.
+
 ```
 firebase login
 ```
@@ -109,7 +126,8 @@ Nos logueamos
 En consola
 
 ![firebase login2](https://user-images.githubusercontent.com/39227411/87824701-c0b9fd80-c843-11ea-9b2f-93ed9ba375b4.PNG)
-
+ 
+ OJO
 
 Asegúrate de estar en el directorio ProyectoAngularFirebase y luego configura Firebase CLI para usar tu Firebase Project:
 ```
@@ -117,13 +135,19 @@ firebase use --add
 ```
 Luego seleccione su ID de proyecto y siga las instrucciones. Cuando se le solicite, puede elegir cualquier Alias, como studyjam, por ejemplo.
 
-## 4. Inicialiazamos el Proyecto
+
+## 4. Inicializamos el Proyecto
+- Ve al directorio del proyecto de Firebase.
+- Ejecuta firebase init functions. La herramienta te ofrece una opción para instalar las dependencias con npm. Es seguro rechazarla si quieres administrar las dependencias de otra manera, pero, si lo haces, deberás ejecutar npm install antes de emular o implementar tus funciones.
 ```
 firebase init 
 ```
 
 ![firebase init](https://user-images.githubusercontent.com/39227411/87824541-78024480-c843-11ea-88a9-a07a156ba9d0.PNG)
 
+- La herramienta te ofrece dos opciones de lenguaje:
+        JavaScript
+        TypeScript: Consulta Escribe funciones en TypeScript para obtener más información
 - Escojemos firebase Functions
 
 
@@ -164,6 +188,11 @@ En nuestra aplicacion nos permite agregar productos electronicos, por lo tanto a
 
 ## CODIFIQUEMOS!!!!
 
+Las funciones controladas por eventos, como los eventos de Cloud Firestore son asíncronas. La función de devolución de llamada debería mostrar null, un objeto o una promesa. Si no se muestra nada, se agota el tiempo de espera de la función, se indica un error y se hace un nuevo intento. Consulta Síncrono, asíncrono y promesas.
+
+### Importa los módulos requeridos para inicializar una app
+
+Por defecto FIREBASE CLI  instala automaticamnet los modulos de Node y el SDK de firebase para Cloud Functions al inicializar el proyecto! 
 ### Importamos Cloud functions y el modulo Firebase Admin
 
 Primero importaremos los módulos requeridos y luego escribiremos tres funciones. 
@@ -319,7 +348,14 @@ Carga módulos Node.js
 
 Utiliza la función require() de Node.js para cargar cualquier módulo de Node.js que instales. También puedes usar la función require() para importar archivos locales que implementes junto con tu función.
 
+### BIBLIOTECAS DE TERCEROS:
+ - Modificar el archivo package.json
+ - Ejecutar npm install
+
 ## CODIFIQUEMOS!!!!
+### Importa los módulos requeridos para inicializar una app
+
+Por defecto FIREBASE CLI  instala automaticamnet los modulos de Node y el SDK de firebase para Cloud Functions al inicializar el proyecto! 
 
 ### 0. Importamos las dependencias
 ```
@@ -412,67 +448,18 @@ En la función anterior, la imagen binaria se descarga desde Cloud Storage. Lueg
 - os.path.dirname(path) :  devuelve la primera parte de la ruta : '/one/two/three' : '/one/two'
 
 
-## Blurin Imagen
-## DEPLOY FUNCTION
-La función solo estará activa después de que la haya implementado. En la línea de comando, ejecute firebase deploy, solo funciones:
-### firebase deploy --only functions
 
-**REQUERIMIENTOS:**
-
-- IDE TEXT editor
-- Terminal para ejecutar comandos de shell con NODEJS v8 or 10
-- Reposirorio 
-Las versiones 8 y 10 de Node.js son compatibles. 
- ## Clonar el projecto
- ### git clone https://github.com/firebase/friendlychat
-### Inicializa el SDK de Firebase para Cloud Functions
-
-Para inicializar tu proyecto, haz lo siguiente:
-
-- Ejecuta firebase login para acceder a través del navegador y autenticar la herramienta de Firebase.
-- Ve al directorio del proyecto de Firebase.
-- Ejecuta firebase init functions. La herramienta te ofrece una opción para instalar las dependencias con npm. Es seguro rechazarla si quieres administrar las dependencias de otra manera, pero, si lo haces, deberás ejecutar npm install antes de emular o implementar tus funciones.
-- La herramienta te ofrece dos opciones de lenguaje:
-        JavaScript
-        TypeScript: Consulta Escribe funciones en TypeScript para obtener más información
-
-### Importa los módulos requeridos para inicializar una app
-
-Por defecto FIREBASE CLI  instala automaticamnet los modulos de Node y el SDK de firebase para Cloud Functions al inicializar el proyecto! 
-
-### BIBLIOTECAS DE TERCEROS:
- - Modificar el archivo package.json
- - Ejecutar npm install
- 
- ## 
- 
- Las funciones controladas por eventos, como los eventos de Cloud Firestore son asíncronas. La función de devolución de llamada debería mostrar null, un objeto o una promesa. Si no se muestra nada, se agota el tiempo de espera de la función, se indica un error y se hace un nuevo intento. Consulta Síncrono, asíncrono y promesas.
  
  ## Implementa funciones en un entorno de producción
+ ## DEPLOY FUNCTION
+ 
+ La función solo estará activa después de que la haya implementado. En la línea de comando, ejecute firebase deploy, solo funciones:
  
  Ejecuta este comando para implementar las funciones:
  
+ ```
+firebase deploy --only functions
  
-###  firebase deploy --only functions
+``` 
+
  
- 
- 
-COMO FUNCIONA: 
-
-![10](https://user-images.githubusercontent.com/39227411/87824891-1db5b380-c844-11ea-85f7-28223ee633d4.png)
-
-  
-
-
-
-![5](https://user-images.githubusercontent.com/39227411/87825560-5904b200-c845-11ea-87ab-f86e52723c9b.PNG)
-
-![9](https://user-images.githubusercontent.com/39227411/87824934-2e662980-c844-11ea-850d-6e6a347cee36.png)
-
-En cambio en Cloud Storage : 
- 
- 
-
-
-
-
