@@ -18,6 +18,7 @@ Cloud Functions para Firebase es un framework sin servidores que te permite ejec
 
 [Cloud Functions para firebase](https://firebase.google.com/docs/functions) 
 
+
 ## RUTA DE IMPLEMENTACION
 
 ### CONFIGURA CLOUD FUNCTIONS
@@ -77,7 +78,9 @@ Otros casos: enviar correos elctronicos de confirmación, bienvenida,o sms!
 ## Crear un proyecto de Firebase
 
 1. En Firebase console, haz clic en Agregar proyecto y selecciona o ingresa el Nombre del proyecto, y continuar.
+
 [Firebase Consola](`[Firebase consola](https://console.firebase.google.com/?pli=1) `) 
+
 2. Configura Google Analytics para tu proyecto (opcional).
 3. Crear Proyecto
 
@@ -149,6 +152,7 @@ En nuestra aplicacion nos permite agregar productos electronicos, por lo tanto a
 ![4](https://user-images.githubusercontent.com/39227411/88220716-56cd9980-cc31-11ea-97d4-243047dce5db.PNG)
 
 ## CICLO VIDA FUNCIONCLOUD FIRESTORE
+
 ![6](https://user-images.githubusercontent.com/39227411/88233532-e2e9bc00-cc45-11ea-988b-13a488b73090.PNG)
 
 ## Activadores de funciones de Cloud Firestore
@@ -159,6 +163,7 @@ En nuestra aplicacion nos permite agregar productos electronicos, por lo tanto a
 Para definir un activador de Cloud Firestore, especifica la ruta de acceso de un documento y un tipo de evento:
 
 ![8](https://user-images.githubusercontent.com/39227411/88234482-fb0e0b00-cc46-11ea-8e10-ea63b54f9915.PNG)
+
 Las rutas de acceso de los documentos pueden hacer referencia a un documento específico o un patrón de comodín.
 Si deseas conectar un activador a un grupo de documentos, como cualquier documento de una colección determinada, utiliza un {wildcard} en lugar del ID del documento:
 
@@ -173,6 +178,7 @@ Importante: Las rutas de acceso de los documentos no deben contener barras final
 Activa una función cuando se cree un documento nuevo
 
 Puedes usar un controlador onCreate() con un comodín para que se active una función cada vez que se cree un documento nuevo en una colección. Esta función de ejemplo llama a createUser cada vez que se agrega un nuevo perfil de usuario:
+
 ![10](https://user-images.githubusercontent.com/39227411/88235925-dc5d4380-cc49-11ea-81b6-5155926dd0e3.PNG)
 
 - Escribir datos
@@ -193,6 +199,7 @@ Las funciones de Cloud Functions se ejecutan en entornos de confianza, lo que si
 Para detectar cuándo se publican nuevos PRODUCTS,se usara  functions.firestore.document().onCreate Cloud Functions Trigger  que ejecuta su código cuando se crea un nuevo objeto en una ruta determinada de Cloud Firestore. 
 
 Agregue la función ................  en su archivo index.js:
+
 ![fries](https://user-images.githubusercontent.com/39227411/88226014-749efc80-cc39-11ea-9e29-e80fecd9837c.PNG)
 
 
@@ -326,6 +333,7 @@ IMAGEN DE REQUIRE !
 Utilizará el trigger de Cloud Functions  functions.storage.onChange  que ejecuta su código tan pronto como se cree o modifique un archivo o carpeta en un depósito de Cloud Storage. Agregue la función ............. en su archivo index.js:
 
 EJEMPLO DE CLOUD FUNCITON STORAGE MODIFICAR
+
 ![fstorage](https://user-images.githubusercontent.com/39227411/88223708-e117fc80-cc35-11ea-8c5a-6465b7a03289.PNG)
 
 
@@ -409,6 +417,7 @@ COMO FUNCIONA:
 
 
 ![5](https://user-images.githubusercontent.com/39227411/87825560-5904b200-c845-11ea-87ab-f86e52723c9b.PNG)
+
 ![9](https://user-images.githubusercontent.com/39227411/87824934-2e662980-c844-11ea-850d-6e6a347cee36.png)
 
 En cambio en Cloud Storage : 
