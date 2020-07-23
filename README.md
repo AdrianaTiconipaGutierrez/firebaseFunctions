@@ -1,5 +1,12 @@
 # CLOUD FUNCTIONS
-
+```
+git status
+git pull origin master
+git add <file>
+git commit -m “message or remarks about the action done”
+git push origin
+git status
+```
 Cloud Functions para Firebase es un framework sin servidores que te permite ejecutar de forma automática el código de backend en respuesta a las solicitudes HTTPS. Tu código JavaScript o TypeScript se almacena en la nube de Google y se ejecuta en un entorno administrado. No necesitas administrar ni escalar tus propios servidores.
 
 [Cloud Functions para firebase](https://firebase.google.com/docs/functions) 
