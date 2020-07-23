@@ -8,7 +8,7 @@ git push origin
 git status
 ```
 
-```
+```diff
 - text in red
 + text in green
 ! text in orange
