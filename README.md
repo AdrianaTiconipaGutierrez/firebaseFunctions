@@ -288,7 +288,7 @@ const nuevoProducto = snapshot.data();
 // Acceder a un campor particular   del objeto
 
 const name = nuevoProducto.name;
-console.log(nuevoProducto)
+console.log('SE CREO UN NUEVO DOCUMENTO')
 return null;
 });
 ```
@@ -317,6 +317,7 @@ exports.writeToFirestore = functions.firestore
 
 
 Las funciones de Cloud Functions se ejecutan en entornos de confianza, lo que significa que están autorizadas como una cuenta de servicio en tu proyecto. Puedes realizar operaciones de lectura y escritura con el SDK de Firebase Admin:
+
 --------------
 
 ### 5. Ejemplo de Agregar Emojins
@@ -384,15 +385,11 @@ exports.onWriteSanitizarPalabras = functions.firestore
         if (nuevoProducto) {
             const descripcionProducto = nuevoProducto.descriptionProduct;
             const descripcionProductoActualizado = sanitizarTexto(descripcionProducto);
-            if (descripcionProducto === descripcionProductoActualizado) {
-                console.log('Nda que hacer');
-                return null;
-            }
-
+        
             // hacemos una llamada a otro recurso en la nube
             //updtae call nos retorna una promesa,
             //puedo hacer mas una ves que la promesa este resuelta .then()
-            return change.after.ref.update({ descripcionProducto: descripcionProductoActualizado })
+            return change.after.ref.update({ descriptionProduct: descripcionProductoActualizado })
         }
         else {
             return null;
@@ -400,6 +397,15 @@ exports.onWriteSanitizarPalabras = functions.firestore
 
     })
 ```
+PARA ROMPER EL BUCLE INFINIOT
+```
+    if (descripcionProducto === descripcionProductoActualizado) {
+                console.log('Nda que hacer');
+                return null;
+            }
+
+```
+
 Funcion: 
 ```
 function sanitizarTexto(text) {
@@ -409,9 +415,14 @@ function sanitizarTexto(text) {
 }
 
 ```
+OJO PUEDEN USAR
+
+- [bad-words](https://www.npmjs.com/package/bad-words) 
 
 Como se trata de una operación asincrónica, debemos devolver la Promesa que indica cuándo finalizó la escritura de Cloud Firestore, para que las Funciones no salgan de la ejecución demasiado pronto.
+
 ### 7. Deploy the Function
+
 La función solo estará activa después de que la haya implementado. En la línea de comando ejecutar
 ```
  firebase deploy --only functions
@@ -419,7 +430,9 @@ La función solo estará activa después de que la haya implementado. En la lín
 Porque habilitamos las API en su Proyecto Google Cloud. La duración de la implementación también depende de la cantidad de funciones que se implementen y aumentará a medida que agregue más con el tiempo.
 
 # TRABAJAMOS CON CLOUD FUNCTIONS Y STORAGE
+
 ![storageFunctions](https://user-images.githubusercontent.com/39227411/88378441-ffcdde80-cd6e-11ea-9434-121fd31e7cfc.PNG)
+
 
 # TEORIA :( CLOUD FUNCTIONS STORAGE 
 
@@ -483,6 +496,17 @@ Recomendacion librerias: NODE 8 Y VERSIONES 7,8,8
 Otra manera ya más fácil de instalar un módulo de Node.js de forma local implica usar el comando npm install en la carpeta que contiene la Cloud Function. Es decir es agregar las dependencias requeridas para la funcion en el archivo package.json y ejecutar el siguiente comando:
 
  - Modificar el archivo package.json
+ ```
+   "dependencies": {
+    "firebase-admin": "^8.10.0",
+    "firebase-functions": "^3.6.1",
+    "fs-extra": "^8.0.1",
+    "imagemin": "^7.0.1",
+    "imagemin-mozjpeg": "^8.0.0",
+    "imagemin-pngquant": "^8.0.0",
+    "sharp": "^0.25.4"
+  },
+ ```
  - Ejecutar npm install
 ```
 npm install 
@@ -496,6 +520,7 @@ Esto combina dos pasos:
 
 
 ## CODIFIQUEMOS!!!!
+
 ### Importa los módulos requeridos para inicializar una app
 
 Por defecto FIREBASE CLI  instala automaticamnet los modulos de Node y el SDK de firebase para Cloud Functions al inicializar el proyecto! 
@@ -506,9 +531,16 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 admin.initializeApp()
 
+// STORAGE
 const path = require('path');
 const os = require('os');
-const fs = require('fs');
+const fse=require('fs-extra');
+
+const imagemin = require('imagemin');
+const imageminPngquant= require('imagemin-pngquant');
+const imageminMozjpegt = require('imagemin-mozjpeg');
+
+const sharp = require('sharp');
 ```
 ### 1. Activa una función cuando hay un cambio en Cloud Storage
 
@@ -664,7 +696,7 @@ Generamos un nuevo nombre del archivo que sera modificado. Agregamos un prefijo 
              .resize(500)
              .toFile(pathTempFileThumb); // /tmp/Imagenes/thumbnail_1.jpg 
 ```
-#### 6.2 Optimizar la imagen
+#### 6.2 Optimizar la imagen : PUEDE SER AL FINAL
 Comprimiremos la imagen con  imagemin
 ```
      const x=  await imagemin([`${directoryTemporary}/*.{jpg,png,jpeg}`],{
