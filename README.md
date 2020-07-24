@@ -146,11 +146,13 @@ En consola
  
  OJO NO ES NECESARIO!
 ----------
+
 Asegúrate de estar en el directorio ProyectoAngularFirebase y luego configura Firebase CLI para usar tu Firebase Project:
 ```
 firebase use --add
 ```
 Luego seleccione su ID de proyecto y siga las instrucciones. Cuando se le solicite, puede elegir cualquier Alias, como studyjam, por ejemplo.
+
 ----------
 
 ## 5. Inicializamos el Proyecto
