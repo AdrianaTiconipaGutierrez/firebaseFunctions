@@ -185,7 +185,7 @@ ls
 
 En nuestra aplicacion nos permite agregar productos electronicos, por lo tanto analizemos la estructura de la base de datos en la consola de FIREBASE, donde esta la coleccion de products.
 
-![4] (https://user-images.githubusercontent.com/39227411/88220716-56cd9980-cc31-11ea-97d4-243047dce5db.PNG)
+![4](https://user-images.githubusercontent.com/39227411/88220716-56cd9980-cc31-11ea-97d4-243047dce5db.PNG)
 
 ### A. Ciclo de vida de una funcion en cloud firestore
 
