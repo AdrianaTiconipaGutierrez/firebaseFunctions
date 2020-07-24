@@ -1,7 +1,19 @@
 # CLOUD FUNCTIONS
 Cloud Functions para Firebase es un framework sin servidores que te permite ejecutar de forma automática el código de backend en respuesta a las solicitudes HTTPS. Tu código JS or TS se almacena en la nube de Google y se ejecuta en un entorno administrado. No necesitas administrar ni escalar tus propios servidores.
 
+- Escribe algún tipo de lógica en el back-end. Las funciones en la nube le permiten ejecutar lo que es esencialmente código del lado del servidor sin necesidad de configurar un servidor
+
 [Cloud Functions para firebase](https://firebase.google.com/docs/functions) 
+
+## 
+Colud functions son funciones en la nube y son activadas con sucede un evento particular sucede en tu poryecto de firebase, cuando creas un documento, o se crrea una nueva cuenta en Firebase auth.
+
+Cloud functions kind of spins up a little server instance
+
+Cuando un evento sucede Las funciones en la nube hacen girar una pequeña instancia de servidor, donde la funcion es activada para hacer un tipo de trabajo en respuesta a estos eventos cuando suceden.
+Pero estas tareas como enviar notificaciones, estas tareas finales implica hacer ping a otros servicios en la nube, lo que significa que no sucedera al instante, esto tomara un tiempo para el controlador de eventos para comunicarse con Firestore, mientras cloud function esta esperando, monitoreando la funcion hasta que termine, pero como sabe que termino?? ENTONCES LA FUNCION RETORNARA UNA PROMESA, las funciones indican NO ME TERMINES A CLOUD FUNCTION HAY MUCHO POR HACER 
+Realizamos una accion escribir en DB, esta llamada me retornara una promesa
+
 
 
 ##  ¿QUE PODEMOS HACER CON CLOUD FUNCTIONS?
@@ -185,6 +197,8 @@ En nuestra aplicacion nos permite agregar productos electronicos, por lo tanto a
 ### Activadores de funciones de Cloud Firestore
 
 ![7](https://user-images.githubusercontent.com/39227411/88233758-1debef80-cc46-11ea-8fc6-24fce09d87a3.PNG)
+### Guardar Datos en Firebase
+![guardar datos](https://user-images.githubusercontent.com/39227411/88312827-a4550f80-cce0-11ea-850f-9c712baf8c39.PNG)
 
 ## CODIFIQUEMOS!!!!
 
@@ -288,10 +302,13 @@ Se quitó el controlador de eventos onChange. En su lugar, la versión 1.0 admit
 
 Para moderar imágenes, realizaremos el siguiente proceso:
 
-1. Verficficar se ha subido una imagen
-2. Descargar la imagen de manera tenporal
-3. Modificar la imagen
-4. Subir la imagen a cloud Storage
+![Proceso](https://user-images.githubusercontent.com/39227411/88324930-682aaa80-ccf2-11ea-9107-79f9be933169.PNG)
+
+
+## 1. Verficficar se ha subido una imagen
+## 2. Descargar la imagen de manera tenporal
+## 3. Modificar la imagen
+## 4. Subir la imagen a cloud Storage
 
 ## DEPENDENCIAS
 Debemos instalar 
@@ -367,12 +384,21 @@ const path = require('path');
 const os = require('os');
 const fs = require('fs');
 ```
-### 1. Activa una función en los cambios de Cloud Storage
+### 1. Activa una función cuando hay un cambio en Cloud Storage
 
 Usa functions.storage para crear una función que maneje los eventos de Cloud Storage. Según si deseas definir el permiso de la función para un depósito específico de Cloud Storage o usar el depósito predeterminado, usa una de las siguientes opciones:
 
 - **functions.storage.object()** para detectar cambios en los objetos del depósito de almacenamiento predeterminado
 - **functions.storage.bucket('bucketName').object()** para detectar los cambios en los objetos de un depósito específico.
+
+```
+// PRUEBA al subir imagen
+exports.optimizarImagen = functions.storage
+    .object()
+    .onFinalize(async object => {
+        console.log('///////////////SE SUBIO UNA IMAGEN');
+    });
+```
 
 ### 2. Accede a los atributos de objetos de Storage
 ```
@@ -383,10 +409,106 @@ const filePath = object.name; // Ruta del archivo en el bucket deposito.
 const contentType = object.contentType; // Tipo de contenido del archivo.
 
 const metageneration = object.metageneration; //Número de veces que se han generado metadatos. Los nuevos objetos tienen un valor de 1.
+
+
+console.log(`------------File Bucket: ${fileBucket}`);//fir-angular-94580.appspot.com 
+console.log(`------------File Path: ${filePath}`);// images/2.jpg
+console.log(`------------Content Type: ${contentType}`);// image/jpeg 
+console.log(`------------Meta generation: ${metageneration}`);//1
 ```
-### 3. Creamos un ruta temporal 
+
+### 3. Verificamos que se subio un archivo de tipo imagen
+```
+        //Validar si es una imagen, trabajamos con contentType
+
+        if (!contentType.startsWith('image/')) {
+            console.log('No es una imagen');
+            return null;
+        }
+```
+
+### 4. Verificamos que no es una imagen ya optimizada
+El evento de subir una imagen por completo, activa esta funcion y nuestro programa una vez que optimize la imagen volvera a subir al STORAGE, es por eso que cambiamos de nombre a la imagen o podriamos trabajar con metadatos, pero por ahora solo con el nombre
+
+
+PARA ESTA PARTE PODEMOS HACERLO DE 2 MANERAS: 
+
+- Verificar el nombre del nuevo archivo
+- Revisar su metadatos
+#### 4.1 Verifiacos por el nombre del archivo: 
+Para esto priemro necesitamos obtener el nombre de la ruta y verificar si tiene la palabara miniatura:
+Para eso usamos la libreria path
+#### PATH 
+
+- path: base name example = '/Users/Refsnes/demo_path.js'" BASENAME=  demo_path.js
+
+- os.join : ('one', 'two', 'three') : 'one/two/three' OR ('/', 'one', 'two', 'three') : '/one/two/three'
+
+- os.path.basename(path) : EJEMPLO   '/one/two/three' : 'three' OR '/one/two/three/' : ''
+
+- os.path.dirname(path) :  devuelve la primera parte de la ruta : '/one/two/three' : '/one/two'
+
+Capturamos el nombre del archivo
+```
+const path = require('path');
+
+// Verificar si es una imagen ya optimizada, usamos filePath
+
+        // Obtener el nombre del archivo. 
+       
+        const fileName = path.basename(filePath);
+        console.log(`*************File Name: ${fileName}`)//2.jpg
+        //Extension del archivo
+        const fileExt = path.extname(filePath)
+        console.log(`*************File Extension: ${fileExt}`)//.jpeg
 
 ```
+Verificamos si tiene el nombre the thumb 
+```
+       // Salir si la imagen ya es una miniatura.
+        //or i can use if fileName.includes(thumb..)
+        if (fileName.startsWith('thumb_')) {
+            console.log('*******La imagen ya ha sido optimizada');
+            return null;
+        }
+
+```
+#### 4.2 Verificamos los metadatos de la imagen
+En este punto agregaremos metadatos en archivo subido de storage, para esto trabajaremos con el bucket contendor por que necesito propiedades del archivo
+
+PARA ESTO necesitamos obtener los metadatos con la funcion getmetadata(), entonces descargamos el archivo del bucket de deposito
+
+
+```
+
+
+```
+
+### 6. Creamos un ruta temporal 
+Creamos una carpeta temporal, para eso usamos carpeta temporal del sistema actual con os.tmpdir().
+
+```
+
+```
+Luego descargo la imagen en esa carpeta
+
+Usamos la libbreria fs-extra
+```diff
++ Node 8, y la ultima version de fs-extra no trabaja con node 8 
+npm install fs-extra
+npm i fs-extra@8.0.1 --save
+```
+Importamos la libreria
+```
+const fs = require('fs');
+const fse=require('fs-extra')
+```
+
+```
+const os = require('os');
+const fs = require('fs');
+const fse = require ('fs-extra')
+
 workingDir = join(tmpdir(),'thumbs');
 
 ```
@@ -402,8 +524,45 @@ Para descargar objetos y volver a subirlos a Cloud Storage con facilidad, instal
 Usa **gcs.bucket.file(filePath).download** para descargar un archivo en un directorio temporal en tu instancia de Cloud Functions. En esta ubicación, puedes procesar el archivo según sea necesario y, luego, subirlo a Cloud Storage. Cuando ejecutes tareas asíncronas, asegúrate de mostrar una promesa de JavaScript en tu devolución de llamada.
 
  
-## MODIFICAMOS LAS IMAGENES 
+## MODIFICAMOS LAS IMAGENES
+### Modificamamos con Imagemin
+Necesitamos las librerias
 
+imagemin
+Recomendacion librerias: NODE 8 Y VERSIONES 7,8,8
+
+[imagemin-pngquant](https://openbase.io/js/imagemin-pngquant/versions)
+
+[imagemin](https://openbase.io/js/imagemin/versions)
+
+[imagemin-mozjpeg](https://openbase.io/js/imagemin-mozjpeg/versions)
+
+Comprimimos imagenes con imagin 
+```
+npm install imagin
+```
+Importano la libreria
+```
+const imagin = require('imagemin');
+```
+Ejecutamos la tarea
+.src('src//*')
+.pipe(imagin())
+.pipe()
+Sin embargo imagin tambien permite especificar el documento para eso tenemos
+```
+- npm i imagemin-pngquant@8.0.0 --save
+- npm i imagemin-mozjpeg@8.0.0 --save
+```
+const pngquant=require('imagemin-pngquant');
+const mozjpeg=require('imagemin-mozjpeg');
+.src('src//*')
+.pipe(imagemin([
+ pngquant({quality:'50'})
+ mozjpeg({quality:'50'})
+ ]))
+.pipe()
+Mas especificacion
 ## Borra los archivos temporales siempre
 
 El almacenamiento en el directorio temporal del disco local es un sistema de archivos en la memoria. Los archivos que escribes consumen memoria disponible en tu función y a veces persisten entre invocaciones. No borrar estos archivos explícitamente podría generar un error por falta de memoria y un posterior inicio en frío.
@@ -437,15 +596,6 @@ En la función anterior, la imagen binaria se descarga desde Cloud Storage. Lueg
 
 
 
-## PATH 
-
-- path: base name example = '/Users/Refsnes/demo_path.js'" BASENAME=  demo_path.js
-
-- os.join : ('one', 'two', 'three') : 'one/two/three' OR ('/', 'one', 'two', 'three') : '/one/two/three'
-
-- os.path.basename(path) : EJEMPLO   '/one/two/three' : 'three' OR '/one/two/three/' : ''
-
-- os.path.dirname(path) :  devuelve la primera parte de la ruta : '/one/two/three' : '/one/two'
 
 
 
