@@ -56,7 +56,7 @@ Otros casos: enviar correos elctronicos de confirmación, bienvenida,o sms!
 Para este proyecto implementaremos cloud functions con los servicios de firestore y storage
 - **FIRESTORE**
 ![firestoreFunctions](https://user-images.githubusercontent.com/39227411/88378437-fd6b8480-cd6e-11ea-917b-4824ce491d03.PNG)
--**STORAGE***
+- **STORAGE**
 ![storageFunctions](https://user-images.githubusercontent.com/39227411/88378441-ffcdde80-cd6e-11ea-9434-121fd31e7cfc.PNG)
 # EMPEZEMOS!!!!! :> CONFIGURACION BASICA
 ## 1. Crear un proyecto de Firebase
