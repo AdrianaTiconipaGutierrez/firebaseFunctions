@@ -81,14 +81,18 @@ node -v
  - git clone https://github.com/AdrianaTiconipaGutierrez/appFirebaseAngular 
  
  Si gustan es de cloud functions: 
+ 
  - git clone https://github.com/AdrianaTiconipaGutierrez/firebaseFunctions
  - El archivo package.json ya enumera las dependencias requeridas: Firebase SDK para Cloud Functions, Firebase Admin SDK, y otros. Para instalarlos localmente, ejecute npm install desde la carpeta de functions:)
  ```
  npm install
  ```
+  ![gitclone](https://user-images.githubusercontent.com/39227411/88420756-5f4edd00-cdb5-11ea-8623-1665051456b4.PNG)
+ 
+ 
 ```diff
 - OJO NODE JS 8 ESTA OBSOLETO PARA FIREBASE FUNCTIONS!!! ==> NODE 10
-- borrar los docs de firebase
+- BORRAR los docs de firebase una vez clonado el proyecto
 ```
 De forma predeterminada, Cloud Functions ejecuta su código en un tiempo de ejecución del Nodo 6. Hemos cambiado esto al tiempo de ejecución del Nodo 8 que está en Beta al especificarlo en el archivo package.json agregando
 ```
@@ -98,6 +102,8 @@ De forma predeterminada, Cloud Functions ejecuta su código en un tiempo de ejec
 
 ## 1. Crear un proyecto de Firebase
 
+HECHO! :<
+
 - En Firebase console, haz clic en Agregar proyecto y selecciona o ingresa el Nombre del proyecto, y continuar.
 
 [Firebase Consola](https://console.firebase.google.com/?pli=1)
@@ -105,9 +111,11 @@ De forma predeterminada, Cloud Functions ejecuta su código en un tiempo de ejec
 - Configura Google Analytics para tu proyecto (opcional).
 - Crear Proyecto
 
+
 ## 2. Habilitar Cloud Storage y la base de datos 
 
 - Pasos a seguir en la CONSOLA DE FIREBASE
+- Agregamos aplicacion
 - Y agregamos al proyecto clonado en **ENVIROMENT** Y **APP.MODULE.TS**
 - Una revisada al proyecto como sube a firestorage
 
@@ -172,6 +180,7 @@ Luego seleccione su ID de proyecto y siga las instrucciones. Cuando se le solici
 ## 5. Inicializamos el Proyecto
 - Ve al directorio del proyecto de Firebase, podemo realizarlo en nuestra app de angular y firebase.
 - Ejecuta firebase init functions. 
+
 ```
 firebase init 
 ```
@@ -181,9 +190,10 @@ firebase init
 - La herramienta te ofrece dos opciones de lenguaje:
         - JavaScript
         - TypeScript
-- Escojemos firebase Functions
+- Escojemos firebase Functions y el proyecto nuevo
 
 ### 5.1 DIRECTORIO FUNCTIONS
+
 Al realizar firebase init nos genera la carpeta de functions:
 
 Al usar Firebase SDK para Cloud Functions, su código de Funciones estará en el directorio de funciones. Su código de Funciones también es una aplicación Node.js y, por lo tanto, se tiene paquete.json que brinda información sobre la aplicación y enumera las dependencias.
