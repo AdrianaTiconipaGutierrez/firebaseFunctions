@@ -1,22 +1,16 @@
-# CLOUD FUNCTIONS
-Cloud Functions para Firebase es un framework sin servidores que te permite ejecutar de forma automática el código de backend en respuesta a las solicitudes HTTPS. Tu código JS or TS se almacena en la nube de Google y se ejecuta en un entorno administrado. No necesitas administrar ni escalar tus propios servidores.
+# INTRODUCCION A CLOUD FUNCTIONS
+Cloud Functions para Firebase es un framework sin servidores(no necesitas administrar ni escalar tus propios servidores), que te permite ejecutar de forma automática el código de backend en respuesta a las solicitudes HTTPS. Es decir son **funciones en la nube y son activadas cuando sucede un evento particular sucede en tu proyecto de firebase**, cuando creas un documento, o se crrea una nueva cuenta en Firebase auth.
 
 - Escribe algún tipo de lógica en el back-end. Las funciones en la nube le permiten ejecutar lo que es esencialmente código del lado del servidor sin necesidad de configurar un servidor
 
 [Cloud Functions para firebase](https://firebase.google.com/docs/functions) 
 
-## 
-Colud functions son funciones en la nube y son activadas con sucede un evento particular sucede en tu poryecto de firebase, cuando creas un documento, o se crrea una nueva cuenta en Firebase auth.
-
-Cloud functions kind of spins up a little server instance
-
 Cuando un evento sucede Las funciones en la nube hacen girar una pequeña instancia de servidor, donde la funcion es activada para hacer un tipo de trabajo en respuesta a estos eventos cuando suceden.
 Pero estas tareas como enviar notificaciones, estas tareas finales implica hacer ping a otros servicios en la nube, lo que significa que no sucedera al instante, esto tomara un tiempo para el controlador de eventos para comunicarse con Firestore, mientras cloud function esta esperando, monitoreando la funcion hasta que termine, pero como sabe que termino?? ENTONCES LA FUNCION RETORNARA UNA PROMESA, las funciones indican NO ME TERMINES A CLOUD FUNCTION HAY MUCHO POR HACER 
-Realizamos una accion escribir en DB, esta llamada me retornara una promesa
+Realizamos una accion escribir en DB, esta llamada me retornará una promesa
 
 
-
-##  ¿QUE PODEMOS HACER CON CLOUD FUNCTIONS?
+## ¿QUE PODEMOS HACER CON CLOUD FUNCTIONS?
 
 ### Ejecuta la limpieza y el mantenimiento de la base de datos.
 
@@ -31,7 +25,7 @@ Con la **administración de eventos de base de datos de Cloud Functions**, puede
 
 Otros casos: borrar usuarios de la BD, convertir texto en emoji, trabjar con metadatos
 
-### Ejecuta tareas intensivas en la nube en lugar de en la app.
+### Ejecuta tareas intensivas en la nube en lugar de la app.
 
 Los desarrolladores pueden aprovechar Cloud Functions para descargar a la nube de Google el trabajo que requiere una gran cantidad de recursos (uso intensivo de CPU o de la red) y que no sería práctico ejecutar en el dispositivo de un usuario.
 
@@ -55,15 +49,16 @@ Cloud Functions puede ayudar a que tu app funcione mejor con otros servicios a t
 
 Los desarrolladores pueden usar Cloud Functions para mantener a los usuarios interesados y actualizados con información relevante sobre la app.
 
-![8](https://user-images.githubusercontent.com/39227411/88200367-0e53b300-cc14-11ea-889a-1971fbe4c771.png)
-
 Otros casos: enviar correos elctronicos de confirmación, bienvenida,o sms!
 
-# STUDY JAM DE FIREBASE 3RA SESSION
+# STUDY JAM DE FIREBASE 3RA SESSION, QUE HAREMOS? 
 
-Para este proyecto implememntaremos cloud functions con los servicios de firestore y storage
-
-
+Para este proyecto implementaremos cloud functions con los servicios de firestore y storage
+- **FIRESTORE**
+![firestoreFunctions](https://user-images.githubusercontent.com/39227411/88378437-fd6b8480-cd6e-11ea-917b-4824ce491d03.PNG)
+-**STORAGE***
+![storageFunctions](https://user-images.githubusercontent.com/39227411/88378441-ffcdde80-cd6e-11ea-9434-121fd31e7cfc.PNG)
+# EMPEZEMOS!!!!! :> CONFIGURACION BASICA
 ## 1. Crear un proyecto de Firebase
 
 - En Firebase console, haz clic en Agregar proyecto y selecciona o ingresa el Nombre del proyecto, y continuar.
@@ -81,24 +76,34 @@ Pasos a seguir....
 ## 3. Instalar la interfaz de línea de comandos de Firebase
 
 La interfaz de línea de comandos de Firebase (CLI) le permitirá servir la aplicación web localmente e implementar su aplicación web y las funciones de la nube.
-### REQUERIMIENTOS
+### 3.1 Requerimientos
 
 -------
-**REQUERIMIENTOS:**
-
 - IDE TEXT editor
-- Terminal para ejecutar comandos de shell con NODEJS v8 or 10
-- Reposirorio 
-Las versiones 8 y 10 de Node.js son compatibles. 
- ### Clonar el projecto
- ### git clone https://github.com/firebase/friendlychat
------
-Para utilizar cloud Functions es necesario   instalara Node Js.  Node.js > 8
+- Debe tener instalado Node Js ==>  npm OJO: Las versiones 8 y 10 de Node.js son compatibles.  
+
+Verificamos la instalacion de Node Js:
 
 ```diff
-- Debe tener instalado npm, que generalmente viene con NodeJS.
 node -v
 ```
+- Reposirorio 
+ - Clonar el projecto
+ - git clone https://github.com/....
+ - El archivo package.json ya enumera las dependencias requeridas: Firebase SDK para Cloud Functions, Firebase Admin SDK, y otros. Para instalarlos localmente, ejecute npm install desde la carpeta de functions:)
+ ```
+ npm install
+ ```
+```diff
+- OJO NODE JS 8 ESTA OBSOLETO PARA FIREBASE FUNCTIONS!!! ==> NODE 10
+```
+De forma predeterminada, Cloud Functions ejecuta su código en un tiempo de ejecución del Nodo 6. Hemos cambiado esto al tiempo de ejecución del Nodo 8 que está en Beta al especificarlo en el archivo package.json agregando
+```
+ "engines": { "node": "8" }
+```
+-----
+
+### 3.2 Instalamos firebase tools:
 Para instalar o actualizar la CLI, ejecute el siguiente comando npm:
 
 ```
@@ -116,8 +121,8 @@ firebase --version
 ```diff
 + Asegúrese de que la versión de Firebase CLI esté por encima de 4.0.0 para que tenga todas las funciones más recientes requeridas para Cloud Functions. 
 ```
-Autorice la CLI de Firebase ejecutando:
-### Inicializa el SDK de Firebase para Cloud Functions
+
+## 4. Autorizamos la linea de comando de firebase:
 
 Para inicializar tu proyecto, haz lo siguiente:
 
@@ -139,18 +144,18 @@ En consola
 
 ![firebase login2](https://user-images.githubusercontent.com/39227411/87824701-c0b9fd80-c843-11ea-9b2f-93ed9ba375b4.PNG)
  
- OJO
-
+ OJO NO ES NECESARIO!
+----------
 Asegúrate de estar en el directorio ProyectoAngularFirebase y luego configura Firebase CLI para usar tu Firebase Project:
 ```
 firebase use --add
 ```
 Luego seleccione su ID de proyecto y siga las instrucciones. Cuando se le solicite, puede elegir cualquier Alias, como studyjam, por ejemplo.
+----------
 
-
-## 4. Inicializamos el Proyecto
-- Ve al directorio del proyecto de Firebase.
-- Ejecuta firebase init functions. La herramienta te ofrece una opción para instalar las dependencias con npm. Es seguro rechazarla si quieres administrar las dependencias de otra manera, pero, si lo haces, deberás ejecutar npm install antes de emular o implementar tus funciones.
+## 5. Inicializamos el Proyecto
+- Ve al directorio del proyecto de Firebase, podemo realizarlo en nuestra app de angular y firebase.
+- Ejecuta firebase init functions. 
 ```
 firebase init 
 ```
@@ -158,97 +163,121 @@ firebase init
 ![firebase init](https://user-images.githubusercontent.com/39227411/87824541-78024480-c843-11ea-88a9-a07a156ba9d0.PNG)
 
 - La herramienta te ofrece dos opciones de lenguaje:
-        JavaScript
-        TypeScript: Consulta Escribe funciones en TypeScript para obtener más información
+        - JavaScript
+        - TypeScript
 - Escojemos firebase Functions
 
+### 5.1 DIRECTORIO FUNCTIONS
+Al realizar firebase init nos genera la carpeta de functions:
 
-### DIRECTORIO FUNCTIONS
+Al usar Firebase SDK para Cloud Functions, su código de Funciones estará en el directorio de funciones. Su código de Funciones también es una aplicación Node.js y, por lo tanto, se tiene paquete.json que brinda información sobre la aplicación y enumera las dependencias.
 
-Cloud Functions le permite tener fácilmente código que se ejecuta en la nube sin tener que configurar un servidor. Le mostraremos cómo crear funciones que reaccionen a los eventos de Firestore y Cloud Storage.
-
-Al usar Firebase SDK para Cloud Functions, su código de Funciones estará en el directorio de funciones. Su código de Funciones también es una aplicación Node.js y, por lo tanto, necesita un paquete.json que brinde información sobre su aplicación y enumere las dependencias.
 ```
 cd functions
 ls
 ```
-### En caso de clonar el repositorio de Git Hub
 
-El archivo package.json ya enumera dos dependencias requeridas: Firebase SDK para Cloud Functions y Firebase Admin SDK. Para instalarlos localmente, ejecute npm install desde la carpeta de functions:
-```
-npm install
-```
-De forma predeterminada, Cloud Functions ejecuta su código en un tiempo de ejecución del Nodo 6. Hemos cambiado esto al tiempo de ejecución del Nodo 8 que está en Beta al especificarlo en el archivo package.json agregando
-```
- "engines": { "node": "8" }
-```
-# TRABAJAMOS CON CLOUD FUNCTIONS Y FIRESTORE
+# *TRABAJAMOS CON CLOUD FUNCTIONS Y FIRESTORE*
 
-## TEORIA Cloud Firestore triggers
+## TEORIA :( Cloud Firestore triggers
 
 En nuestra aplicacion nos permite agregar productos electronicos, por lo tanto analizemos la estructura de la base de datos en la consola de FIREBASE, donde esta la coleccion de products.
 
-![4](https://user-images.githubusercontent.com/39227411/88220716-56cd9980-cc31-11ea-97d4-243047dce5db.PNG)
+![4] (https://user-images.githubusercontent.com/39227411/88220716-56cd9980-cc31-11ea-97d4-243047dce5db.PNG)
 
-### Ciclo de vida de una funcion en cloud firestore
+### A. Ciclo de vida de una funcion en cloud firestore
 
 ![6](https://user-images.githubusercontent.com/39227411/88233532-e2e9bc00-cc45-11ea-988b-13a488b73090.PNG)
 
-### Activadores de funciones de Cloud Firestore
+### B. Activadores de funciones de Cloud Firestore
 
 ![7](https://user-images.githubusercontent.com/39227411/88233758-1debef80-cc46-11ea-8fc6-24fce09d87a3.PNG)
-### Guardar Datos en Firebase
+
+### C. Guardar Datos en Firebase
+
 ![guardar datos](https://user-images.githubusercontent.com/39227411/88312827-a4550f80-cce0-11ea-850f-9c712baf8c39.PNG)
 
-## CODIFIQUEMOS!!!!
+## A CODEAR!!!!
 
-Las funciones controladas por eventos, como los eventos de Cloud Firestore son asíncronas. La función de devolución de llamada debería mostrar null, un objeto o una promesa. Si no se muestra nada, se agota el tiempo de espera de la función, se indica un error y se hace un nuevo intento. Consulta Síncrono, asíncrono y promesas.
+Las funciones controladas por eventos, como los eventos de Cloud Firestore son asíncronas. La función de devolución de llamada debería mostrar null, un objeto o una promesa. Si no se muestra nada, se agota el tiempo de espera de la función, se indica un error y se hace un nuevo intento.
+[Ejemplos Basicos Firestore Functions ](https://firebase.google.com/docs/functions/firestore-events) 
 
-### Importa los módulos requeridos para inicializar una app
+### 1. Importar los módulos requeridos para inicializar una app
 
-Por defecto FIREBASE CLI  instala automaticamnet los modulos de Node y el SDK de firebase para Cloud Functions al inicializar el proyecto! 
-### Importamos Cloud functions y el modulo Firebase Admin
+Por defecto FIREBASE CLI  instala automaticamnetelos modulos de Node y el SDK de firebase para Cloud Functions al inicializar el proyecto! 
+
+- **Importamos Cloud functions y el modulo Firebase Admin**
 
 Primero importaremos los módulos requeridos y luego escribiremos tres funciones. 
 
 Se requerirán dos módulos, el módulo de funciones firebase nos permite escribir las reglas de activación de Cloud Functions, mientras que el módulo firebase-admin nos permite usar la plataforma Firebase en un servidor con acceso de administrador, por ejemplo, para escribir en el Cloud Firestore.
 
-![3](https://user-images.githubusercontent.com/39227411/88220447-fb031080-cc30-11ea-932c-93478caf432f.PNG)
-
 ```
 //Importamos el SDK de Firebase para Cloud Functions 
+
 const functions = require('firebase-functions');
+
 // Importamos e inicializamos el  Firebase Admin SDK para acceder a Cloud Firestore.
+
 const admin = require('firebase-admin');
 admin.initializeApp()
 ```
-Encada documento de la coleccion productos podemos encontrar los campos precio, descripcion, titulo del producto: 
 
-### Define un activador de función
+### 2. Definir un activador de función
 
 Para definir un activador de Cloud Firestore, especifica la ruta de acceso de un documento y un tipo de evento:
 
-![8](https://user-images.githubusercontent.com/39227411/88234482-fb0e0b00-cc46-11ea-8e10-ea63b54f9915.PNG)
-
 Las rutas de acceso de los documentos pueden hacer referencia a un documento específico o un patrón de comodín.
+```
+exports.nombreFunción = functions.firestore
+.document('miColeccion/idDocumento')
+.onCreate((snapshot, context) => {
+/*...*/
+});
+```
 
 Si deseas conectar un activador a un grupo de documentos, como cualquier documento de una colección determinada, utiliza un {wildcard} en lugar del ID del documento:
+```
+//Escuchar cambios en todos los documentos de coleción PRODUCTS
 
-![9](https://user-images.githubusercontent.com/39227411/88234483-fc3f3800-cc46-11ea-85ec-349503399392.PNG)
+exports.nombreFunción = functions.firestore
+.document('mIColeccion/{documentoId}')
+.onCreate((snapshot, context) => {
+/*...*/
+wildCard= context.params.nombreWildcard;
+});
+```
 
-Las coincidencias de comodines se extraen de la ruta del documento y se almacenan en **context.params.** Puedes definir tantos comodines como desees para sustituir los ID explícitos de colección o de documento.
+- *Las coincidencias de comodines se extraen de la ruta del documento y se almacenan en **context.params.** *
 
-Importante: Las rutas de acceso de los documentos no deben contener barras finales.
+- Puedes definir tantos comodines como desees para sustituir los ID explícitos de colección o de documento.
 
-### Activa una función cuando se cree un documento nuevo
++ Importante: Las rutas de acceso de los documentos no deben contener barras finales.
 
-Activa una función cuando se cree un documento nuevo
+### 3. Activa una función cuando se cree un documento nuevo
 
-Puedes usar un controlador onCreate() con un comodín para que se active una función cada vez que se cree un documento nuevo en una colección. Esta función de ejemplo llama a createUser cada vez que se agrega un nuevo perfil de usuario:
+Puedes usar un controlador onCreate() con un comodín para que se active una función cada vez que se cree un documento nuevo en una colección. 
+```
+//Escuchar cambios en todos los documentos de colección PRODUCTS
 
-![10](https://user-images.githubusercontent.com/39227411/88235925-dc5d4380-cc49-11ea-81b6-5155926dd0e3.PNG)
+exports.crearProducto = functions.firestore
+.document('products/{productId}')
+.onCreate((snapshot, context) => {
+const productId= context.params.productId;
 
-- Escribir datos
+//Obtenemos un objeto representa documento
+
+const nuevoProducto = snapshot.data();
+
+// Acceder a un campor particular   del objeto
+
+const name = nuevoProducto.name;
+console.log(nuevoProducto)
+return null;
+});
+```
+---------------
+### 4.  Escribir datos
 
 Cada invocación de función está asociada a un documento específico de tu base de datos de Cloud Firestore. Puedes acceder a ese documento como una DocumentReference en la propiedad ref de la instantánea que se mostró a tu función.
 
@@ -256,23 +285,117 @@ Esta DocumentReference proviene del SDK de Cloud Firestore para Node.js que incl
 
 - Datos fuera del evento activador
 
-![11](https://user-images.githubusercontent.com/39227411/88236796-d7998f00-cc4b-11ea-9f94-4c8b613dd2ba.PNG)
+```
+const admin = require('firebase-admin');
+admin.initializeApp();
+
+const db = admin.firestore();
+
+exports.writeToFirestore = functions.firestore
+  .document('some/doc')
+  .onWrite((change, context) => {
+    db.doc('some/otherdoc').set({ ... });
+  });
+
+```
 
 
 Las funciones de Cloud Functions se ejecutan en entornos de confianza, lo que significa que están autorizadas como una cuenta de servicio en tu proyecto. Puedes realizar operaciones de lectura y escritura con el SDK de Firebase Admin:
+--------------
+
+### 5. Ejemplo de Agregar Emojins
+
+Funcion Cloud Functions: 
+
+```
+exports.onCreateStars = functions.firestore
+    .document('products/{productId}')
+    .onCreate((snap, context) => {
+        // Obtener un objeto que represente el documento
+        const newProduct = snap.data();
+        const productId = context.params.productId;
 
 
-## MANOS A LA OBRA
+        console.log(`****ID NEW PRODUCT ${productId}`);
+        console.log(newProduct);
+
+        if (newProduct) {
+            // accede a un campo particular como lo harías con cualquier propiedad JS
+            const titleProduct = newProduct.titleProduct;
+            const starsProduct = newProduct.starsProduct;
+            const descriptionProduct = newProduct.descriptionProduct;
+
+            const titleProductUpper = changeToUpperCase(titleProduct);
+            const starsProductEmojin = changeToEmojin(starsProduct);
+            // Cada invocacion de funcion esta asociada a un documento de firestore,
+            // y se puede acceder al documento como una DocumentReference en la propiedad ref
+            // ref.update
+            return snap.ref.update({ titleProduct: titleProductUpper, starsProduct: starsProductEmojin});
+        }
+        else {
+            return null;
+        }
+    });
+```
+Funcion que replaze un nuemro por emojin
+```
+function changeToEmojin(text) {
+    cantStars = text.match(/[0-9]+/g)[0];
+    cantStars = parseInt(cantStars);
+    stars = '';
+    for (i = 0; i < cantStars; i++) {
+        stars = '⭐' + stars;
+    }
+    return text.replace(/[0-9]+/g, stars);
+}
+
+
+function changeToUpperCase(text) {
+    return text.toUpperCase();
+}
+```
+### 6. Ejemplo Sanitizar Palabras
+
 Para detectar cuándo se publican nuevos PRODUCTS,se usara  functions.firestore.document().onCreate Cloud Functions Trigger  que ejecuta su código cuando se crea un nuevo objeto en una ruta determinada de Cloud Firestore. 
 
-Agregue la función ................  en su archivo index.js:
+```
+exports.onWriteSanitizarPalabras = functions.firestore
+    .document('products/{productId}')
+    .onWrite((change, context) => {
+        //change 2 documentos. bfeore . after
+        const nuevoProducto = change.after.data();
+        console.log(nuevoProducto);
+        if (nuevoProducto) {
+            const descripcionProducto = nuevoProducto.descriptionProduct;
+            const descripcionProductoActualizado = sanitizarTexto(descripcionProducto);
+            if (descripcionProducto === descripcionProductoActualizado) {
+                console.log('Nda que hacer');
+                return null;
+            }
 
-![fries](https://user-images.githubusercontent.com/39227411/88226014-749efc80-cc39-11ea-9e29-e80fecd9837c.PNG)
-Por lo tanto la primera función en la nube sera para reconocer ....
+            // hacemos una llamada a otro recurso en la nube
+            //updtae call nos retorna una promesa,
+            //puedo hacer mas una ves que la promesa este resuelta .then()
+            return change.after.ref.update({ descripcionProducto: descripcionProductoActualizado })
+        }
+        else {
+            return null;
+        }
+
+    })
+```
+Funcion: 
+```
+function sanitizarTexto(text) {
+    const x = 'fuck';
+    const y = text.replace(x, "😘");
+    return y;
+}
+
+```
 
 Como se trata de una operación asincrónica, debemos devolver la Promesa que indica cuándo finalizó la escritura de Cloud Firestore, para que las Funciones no salgan de la ejecución demasiado pronto.
-
-## Deploy the Function
+### 7. Deploy the Function
 La función solo estará activa después de que la haya implementado. En la línea de comando ejecutar
 ```
  firebase deploy --only functions
@@ -280,10 +403,13 @@ La función solo estará activa después de que la haya implementado. En la lín
 Porque habilitamos las API en su Proyecto Google Cloud. La duración de la implementación también depende de la cantidad de funciones que se implementen y aumentará a medida que agregue más con el tiempo.
 
 # TRABAJAMOS CON CLOUD FUNCTIONS Y STORAGE
+![storageFunctions](https://user-images.githubusercontent.com/39227411/88378441-ffcdde80-cd6e-11ea-9434-121fd31e7cfc.PNG)
 
-# CLOUD FUNCTIONS STORAGE 
+# TEORIA :( CLOUD FUNCTIONS STORAGE 
 
 Puedes activar una función en respuesta a la carga, actualización o eliminación de archivos y carpetas en Cloud Storage.
+
+[Activadores en Cloud Storage](https://firebase.google.com/docs/functions/gcp-storage-events) 
 
 Cloud Storage admite los siguientes eventos:
 
@@ -298,76 +424,60 @@ Se quitó el controlador de eventos onChange. En su lugar, la versión 1.0 admit
 
 # MODIFICAR IMAGEN TAMAñO
 
-![112](https://user-images.githubusercontent.com/39227411/88244023-5ac4e000-cc60-11ea-8294-75911f40ba99.PNG)
-
-Para moderar imágenes, realizaremos el siguiente proceso:
+Para optimizar la imagen, realizaremos el siguiente proceso:
 
 ![Proceso](https://user-images.githubusercontent.com/39227411/88324930-682aaa80-ccf2-11ea-9107-79f9be933169.PNG)
-
-
-## 1. Verficficar se ha subido una imagen
-## 2. Descargar la imagen de manera tenporal
-## 3. Modificar la imagen
-## 4. Subir la imagen a cloud Storage
 
 ## DEPENDENCIAS
 Debemos instalar 
 
-Necesitamos [google-cloud/storage](https://www.npmjs.com/package/@google-cloud/storage)
-```
-npm install @google-cloud/storage
-```
-Para modificar la imagen [sharp](https://sharp.pixelplumbing.com/)
+- Para modificar tamaño de la imagen requerimos la libreria [sharp](https://sharp.pixelplumbing.com/)
 ```
 npm install sharp
 ```
-Trabajaremos con archivos del sistema: 
-
-[fs-extra](https://www.npmjs.com/package/fs-extra)
+- Trabajaremos con archivos del sistema, por defecto Nodejstiene su libreria de file system, pero usaremos uan version mejorada:  [fs-extra](https://www.npmjs.com/package/fs-extra)
 ```
 npm install fs-extra
 ```
-### Instalamos dependencias para el proceso de las imagenes en cloud storage
-
-- npm i @google-cloud/storage –save
-- npm i fs-extra –save
-- npm i sharp --save
-- npm i imagemin --save
-- npm i imagemin-pngquant --save
-- npm i imagemin-mozjpeg --save
-Esto instalará los dos paquetes localmente y los agregará como dependencias declaradas en su archivo package.json.
-Para instalar estos dos paquetes en su aplicación Cloud Functions, ejecute el siguiente comando 
+Observaciones
+```diff
++ Node 8, y la ultima version de fs-extra no trabaja con node 8 
+npm i fs-extra@8.0.1 --save
 ```
-npm install --save.
+- Para optimizar la imagen debemos comprimirla por lo tanto usaremos [imagemin](https://www.npmjs.com/package/imagemin) 
+
+- [imagemin-pngquant](https://www.npmjs.com/package/imagemin-pngquant) 
+- [imagemin-mozjpeg](https://www.npmjs.com/package/imagemin-mozjpeg) 
+
 ```
-Asegúrese de hacerlo desde el directorio de funcionts.
-
-
-### ADMINISTRAR DEPENDENCIAS
-Las funciones pueden usar módulos de Node.js externos y datos locales. Las dependencias en Node.js se administran con npm y se expresan en un archivo de metadatos llamado package.json. Por lo general, los entornos de ejecución de Node.js para Cloud Functions admiten la instalación mediante npm o yarn.
-A fin de especificar una dependencia para tu función, agrégala a tu archivo package.json.
-
-
-Luego, la dependencia se importa en la función:
-
-Instalar módulos de Node.js localmente con npm
-
-La manera más fácil de instalar un módulo de Node.js de forma local implica usar el comando npm install en la carpeta que contiene la Cloud Function. Por ejemplo, el siguiente comando agrega el módulo uuid:
+npm i imagemin --save
+npm i imagemin-pngquant@8.0.0 --save
+npm i imagemin-mozjpeg@8.0.0 --save
 ```
- npm install uuid
+
+imagemin
+Recomendacion librerias: NODE 8 Y VERSIONES 7,8,8
+
+[imagemin-pngquant](https://openbase.io/js/imagemin-pngquant/versions)
+
+[imagemin](https://openbase.io/js/imagemin/versions)
+
+[imagemin-mozjpeg](https://openbase.io/js/imagemin-mozjpeg/versions)
+
+Otra manera ya más fácil de instalar un módulo de Node.js de forma local implica usar el comando npm install en la carpeta que contiene la Cloud Function. Es decir es agregar las dependencias requeridas para la funcion en el archivo package.json y ejecutar el siguiente comando:
+
+ - Modificar el archivo package.json
+ - Ejecutar npm install
 ```
+npm install 
+```
+Asegúrese de hacerlo desde el directorio de functions.
+
 Esto combina dos pasos:
 
 - Marca la última versión del módulo como una dependencia en tu archivo package.json. Esto es muy importante: Cloud Functions solo instala módulos que están declarados en tu archivo package.json.
 - Descarga el módulo en tu directorio node_modules. Esto te permite usar el módulo cuando desarrollas de forma local.
 
-Carga módulos Node.js
-
-Utiliza la función require() de Node.js para cargar cualquier módulo de Node.js que instales. También puedes usar la función require() para importar archivos locales que implementes junto con tu función.
-
-### BIBLIOTECAS DE TERCEROS:
- - Modificar el archivo package.json
- - Ejecutar npm install
 
 ## CODIFIQUEMOS!!!!
 ### Importa los módulos requeridos para inicializar una app
@@ -379,7 +489,7 @@ Por defecto FIREBASE CLI  instala automaticamnet los modulos de Node y el SDK de
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 admin.initializeApp()
-const spawn = require('child-process-promise').spawn;
+
 const path = require('path');
 const os = require('os');
 const fs = require('fs');
@@ -402,49 +512,46 @@ exports.optimizarImagen = functions.storage
 
 ### 2. Accede a los atributos de objetos de Storage
 ```
-const fileBucket = object.bucket; // El depósito de almacenamiento que contiene el archivo
-
-const filePath = object.name; // Ruta del archivo en el bucket deposito.
-
-const contentType = object.contentType; // Tipo de contenido del archivo.
-
-const metageneration = object.metageneration; //Número de veces que se han generado metadatos. Los nuevos objetos tienen un valor de 1.
-
-
-console.log(`------------File Bucket: ${fileBucket}`);//fir-angular-94580.appspot.com 
-console.log(`------------File Path: ${filePath}`);// images/2.jpg
-console.log(`------------Content Type: ${contentType}`);// image/jpeg 
-console.log(`------------Meta generation: ${metageneration}`);//1
+const fileBucket = object.bucket; // El depósito de almacenamiento que contiene el archivo: fir-angular-94580.appspot.com 
+const filePath = object.name; // Ruta del archivo en el bucket deposito: images/1.jpg 
+const contentType = object.contentType; // Tipo de contenido del archivo.: image/jpeg 
+const metageneration = object.metageneration; // Número de veces que se han generado metadatos. Los 
 ```
 
-### 3. Verificamos que se subio un archivo de tipo imagen
+### 3. Verificamos que el archivo que se subio es una imagen
+Trabajamos con contentType
 ```
-        //Validar si es una imagen, trabajamos con contentType
-
         if (!contentType.startsWith('image/')) {
             console.log('No es una imagen');
             return null;
         }
 ```
 
-### 4. Verificamos que no es una imagen ya optimizada
-El evento de subir una imagen por completo, activa esta funcion y nuestro programa una vez que optimize la imagen volvera a subir al STORAGE, es por eso que cambiamos de nombre a la imagen o podriamos trabajar con metadatos, pero por ahora solo con el nombre
+### 4. Verificamos si la imagen ya ha sido optimizada
 
+El evento de subir una imagen por completo, activa esta funcion y nuestro programa una vez que optimize la imagen volvera a subir al STORAGE, es por eso que cambiamos de nombre a la imagen y modificamos los metadatos de la imagen
 
 PARA ESTA PARTE PODEMOS HACERLO DE 2 MANERAS: 
 
 - Verificar el nombre del nuevo archivo
 - Revisar su metadatos
+
 #### 4.1 Verifiacos por el nombre del archivo: 
-Para esto priemro necesitamos obtener el nombre de la ruta y verificar si tiene la palabara miniatura:
-Para eso usamos la libreria path
+
+Verificar si es una imagen ya optimizada, usamos filePath para capturar el nombre del archivo y verificar si tiene la palabra "thumbnail_"
+
+Para eso usamos la libreria path:
+
+```
+const path = require('path');
+```
 #### PATH 
 
 - path: base name example = '/Users/Refsnes/demo_path.js'" BASENAME=  demo_path.js
 
 - os.join : ('one', 'two', 'three') : 'one/two/three' OR ('/', 'one', 'two', 'three') : '/one/two/three'
 
-- os.path.basename(path) : EJEMPLO   '/one/two/three' : 'three' OR '/one/two/three/' : ''
+- path.basename(path) : EJEMPLO   '/one/two/three' : 'three' OR '/one/two/three/' : ''
 
 - os.path.dirname(path) :  devuelve la primera parte de la ruta : '/one/two/three' : '/one/two'
 
@@ -452,164 +559,136 @@ Capturamos el nombre del archivo
 ```
 const path = require('path');
 
-// Verificar si es una imagen ya optimizada, usamos filePath
-
-        // Obtener el nombre del archivo. 
-       
-        const fileName = path.basename(filePath);
-        console.log(`*************File Name: ${fileName}`)//2.jpg
+        
+        // Obtenemos el nombre del archivo. 
+        const fileName = path.basename(filePath);  //1.jpg
         //Extension del archivo
-        const fileExt = path.extname(filePath)
-        console.log(`*************File Extension: ${fileExt}`)//.jpeg
+        const fileExtension = path.extname(filePath);  //.jpg
 
 ```
-Verificamos si tiene el nombre the thumb 
+
+Verificamos si tiene el nombre the "thumbnail_"
 ```
        // Salir si la imagen ya es una miniatura.
-        //or i can use if fileName.includes(thumb..)
-        if (fileName.startsWith('thumb_')) {
+        
+      if (fileName.startsWith('thumbnail_')) {
             console.log('*******La imagen ya ha sido optimizada');
             return null;
         }
 
 ```
 #### 4.2 Verificamos los metadatos de la imagen
-En este punto agregaremos metadatos en archivo subido de storage, para esto trabajaremos con el bucket contendor por que necesito propiedades del archivo
+Segunda forma de verificar si el archivo ya fue optimizado, en este punto agregaremos metadatos en archivo subido de storage, para esto trabajaremos con el bucket contendor por que necesito propiedades del archivo
 
 PARA ESTO necesitamos obtener los metadatos con la funcion getmetadata(), entonces descargamos el archivo del bucket de deposito
 
 
 ```
+        // Descargar archivo del bucket deposito
+  
+        const bucket = admin.storage().bucket(fileBucket); // Objeto
+        const file = bucket.file(filePath); // Objeto
 
+
+        // Capturamos los metadatos del archivo subido al firebase Storage
+        const [data] = await file.getMetadata();//Array metadata
+
+        if (data.metadata.optimized) {
+            console.log(`Imagen ya ha sido optimizada`);
+            return null;
+        }
 
 ```
 
-### 6. Creamos un ruta temporal 
+### 5.  DESCARGAMOS EL ARCHIVO DEL BUCKET de firebase storage  A LA CARPETA TEMPORAL
 Creamos una carpeta temporal, para eso usamos carpeta temporal del sistema actual con os.tmpdir().
-
-```
-
-```
-Luego descargo la imagen en esa carpeta
-
-Usamos la libbreria fs-extra
-```diff
-+ Node 8, y la ultima version de fs-extra no trabaja con node 8 
-npm install fs-extra
-npm i fs-extra@8.0.1 --save
-```
-Importamos la libreria
-```
-const fs = require('fs');
-const fse=require('fs-extra')
-```
-
+Importamos la librerias necesarias: 
 ```
 const os = require('os');
-const fs = require('fs');
-const fse = require ('fs-extra')
+const fse=require('fs-extra');
+```
+#### 5.1 GENERAMOS UN DIRECTORIO TEMPORAL Y LA RUTA TEMPORAL DE LA IMAGEN
 
-workingDir = join(tmpdir(),'thumbs');
+``` 
+        //Generamos un directorio temporal 
+        const directoryTemporary = path.join(os.tmpdir(), 'Imagenes'); // /tmp/Imagenes
+       
+       //Generamos la ruta temporal de la imagen 
+        const pathTempFile = path.join(directoryTemporary, fileName);// /tmp/Imagenes/1.jpg 
+
+        //  Aseguramos que se creo el archivo y si  no lo crea
+        
+        await fse.ensureDir(directoryTemporary).then(console.log('++++++SI CREO EL ARCHIVO'));     
 
 ```
-### 4. Descarga, transforma y sube un archivo
+#### 5.2 DESCARGAMOS EL ARCHIVO DE STORAGE EN LA RUTA TEMPORAL 
 
-En algunos casos, es posible que no sea necesario descargar archivos desde Cloud Storage. Sin embargo, para realizar tareas intensivas, como generar una imagen en miniatura de un archivo almacenado en Cloud Storage, debes descargar archivos en la instancia de las funciones, es decir, en la máquina virtual que ejecuta el código.
+Usa **bucket.file(filePath).download** para descargar un archivo en un directorio temporal en tu instancia de Cloud Functions. En esta ubicación, puedes procesar el archivo según sea necesario y, luego, subirlo a Cloud Storage. Cuando ejecutes tareas asíncronas, asegúrate de mostrar una promesa de JavaScript en tu devolución de llamada.
 
-Para descargar objetos y volver a subirlos a Cloud Storage con facilidad, instala el paquete de Google Cloud Storage mediante el comando npm install --save @google-cloud/storage y, luego, impórtalo. Si quieres usar promesas de JavaScript para controlar procesos externos, como las tareas de procesamiento de miniaturas de la muestra, importa también child-process-promise:
-
-
-#### Descargar un archivo
-
-Usa **gcs.bucket.file(filePath).download** para descargar un archivo en un directorio temporal en tu instancia de Cloud Functions. En esta ubicación, puedes procesar el archivo según sea necesario y, luego, subirlo a Cloud Storage. Cuando ejecutes tareas asíncronas, asegúrate de mostrar una promesa de JavaScript en tu devolución de llamada.
-
- 
-## MODIFICAMOS LAS IMAGENES
-### Modificamamos con Imagemin
-Necesitamos las librerias
-
-imagemin
-Recomendacion librerias: NODE 8 Y VERSIONES 7,8,8
-
-[imagemin-pngquant](https://openbase.io/js/imagemin-pngquant/versions)
-
-[imagemin](https://openbase.io/js/imagemin/versions)
-
-[imagemin-mozjpeg](https://openbase.io/js/imagemin-mozjpeg/versions)
-
-Comprimimos imagenes con imagin 
 ```
-npm install imagin
+        await bucket.file(filePath).download({ destination:  pathTempFile}).then(console.log('---+++SI DESACARGO'));
 ```
-Importano la libreria
-```
-const imagin = require('imagemin');
-```
-Ejecutamos la tarea
-.src('src//*')
-.pipe(imagin())
-.pipe()
-Sin embargo imagin tambien permite especificar el documento para eso tenemos
-```
-- npm i imagemin-pngquant@8.0.0 --save
-- npm i imagemin-mozjpeg@8.0.0 --save
-```
-const pngquant=require('imagemin-pngquant');
-const mozjpeg=require('imagemin-mozjpeg');
-.src('src//*')
-.pipe(imagemin([
- pngquant({quality:'50'})
- mozjpeg({quality:'50'})
- ]))
-.pipe()
-Mas especificacion
-## Borra los archivos temporales siempre
 
+### 6. Modificamos la imagen desde el directorio Temporal
+EMPEZAMOS A MODIFICAR LA IMAGEN ORIGINAL  DESDE LA RUTA TEMPORAL
+
+Generamos un nuevo nombre del archivo que sera modificado. Agregamos un prefijo 'thumbnail_' Y Generamos ruta Temporal del nuevo archivo:
+
+```
+        // Generamos un nuevo nombre del archivo que sera modificado. Agregamos un prefijo 'thumbnail_'
+        const thumbFileName=`thumbnail_${fileName}`; // thumbnail_1.jpg 
+        
+        // Generamos ruta Temporal del nuevo archivo
+        const pathTempFileThumb= path.join(directoryTemporary, thumbFileName);// /tmp/Imagenes/thumbnail_1.jpg 
+
+```
+#### 6.1 Cambiamos el tamaño de la imagen con sharp ==> Redimensionamos
+```
+         await sharp(pathTempFile)  ///tmp/Imagenes/1.jpg
+             .resize(500)
+             .toFile(pathTempFileThumb); // /tmp/Imagenes/thumbnail_1.jpg 
+```
+#### 6.2 Optimizar la imagen
+Comprimiremos la imagen con  imagemin
+```
+     const x=  await imagemin([`${directoryTemporary}/*.{jpg,png,jpeg}`],{
+            destination: directoryTemporary,
+            plugins: [
+                imageminMozjpegt({quality: 50}),
+                imageminPngquant([0.3, 0.5])
+            ]
+        });
+```
+### 7. Subimos la imagen modificada a Firebase Storag
+
+```
+         //SUBIMOS A FIREBASE STORAGE
+         
+        // Generamos la ruta de la imagen que subiremos a Storage 
+        const filePathThumb = path.join(path.dirname(filePath), thumbFileName); //  images/thumbnail_1.jpg 
+        
+        //Subiendo la miniatura.
+        await bucket.upload(pathTempFileThumb, {
+            destination: filePathThumb,
+            metadata: {metadata: {optimized: true}},
+        });
+```
+### 8. Borra los archivos temporales siempre
+Una vez que se haya subido la miniatura, elimine el archivo local para liberar espacio en disco.
 El almacenamiento en el directorio temporal del disco local es un sistema de archivos en la memoria. Los archivos que escribes consumen memoria disponible en tu función y a veces persisten entre invocaciones. No borrar estos archivos explícitamente podría generar un error por falta de memoria y un posterior inicio en frío.
 
+```
+ return fse.remove(directoryTemporary);
+```
 
-
-
-
-
-##  Importar y configurar dependencias
-
-Para importar las dos dependencias que se instalaron y algunos módulos principales de Node.js (path, os y fs) que necesitaremos en esta sección, agregue las siguientes líneas en la parte superior de su archivo index.js:
-
-IMAGEN DE REQUIRE !
-
-![5](https://user-images.githubusercontent.com/39227411/88222831-89c55c80-cc34-11ea-8441-82e15554d46c.PNG)
-
-Utilizará el trigger de Cloud Functions  functions.storage.onChange  que ejecuta su código tan pronto como se cree o modifique un archivo o carpeta en un depósito de Cloud Storage. Agregue la función ............. en su archivo index.js:
-
-EJEMPLO DE CLOUD FUNCITON STORAGE MODIFICAR
-
-![fstorage](https://user-images.githubusercontent.com/39227411/88223708-e117fc80-cc35-11ea-8c5a-6465b7a03289.PNG)
-
-
-##  funcion que modifica la imagen MODOFICAR
-
-![modificarImagen](https://user-images.githubusercontent.com/39227411/88225403-6f8d7d80-cc38-11ea-8471-dd85c64680f4.PNG)
-
-En la función anterior, la imagen binaria se descarga desde Cloud Storage. Luego, la imagen se vuelve borrosa con la herramienta de conversión de ImageMagick y la versión borrosa se vuelve a cargar en el Storage Bucket. Luego eliminamos el archivo en la instancia de Cloud Functions para liberar espacio en el disco, lo hacemos porque la misma instancia de Cloud Functions puede reutilizarse y, si no se limpian los archivos, podría quedarse sin disco. Finalmente, agregamos un booleano al mensaje de chat que indica que la imagen fue moderada, esto desencadenará una actualización del mensaje en el cliente.
-
-
-
-
-
-
-
- 
- ## Implementa funciones en un entorno de producción
  ## DEPLOY FUNCTION
- 
+ Implementa funciones en un entorno de producción
  La función solo estará activa después de que la haya implementado. En la línea de comando, ejecute firebase deploy, solo funciones:
  
  Ejecuta este comando para implementar las funciones:
  
- ```
-firebase deploy --only functions
- 
+```
+ firebase deploy --only functions
 ``` 
-
+## OBSERVACIONES:
  
