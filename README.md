@@ -54,29 +54,17 @@ Otros casos: enviar correos elctronicos de confirmación, bienvenida,o sms!
 # STUDY JAM DE FIREBASE 3RA SESSION, QUE HAREMOS? 
 
 Para este proyecto implementaremos cloud functions con los servicios de firestore y storage
+
 - **FIRESTORE**
+
 ![firestoreFunctions](https://user-images.githubusercontent.com/39227411/88378437-fd6b8480-cd6e-11ea-917b-4824ce491d03.PNG)
+
 - **STORAGE**
+
 ![storageFunctions](https://user-images.githubusercontent.com/39227411/88378441-ffcdde80-cd6e-11ea-9434-121fd31e7cfc.PNG)
+
 # EMPEZEMOS!!!!! :> CONFIGURACION BASICA
-## 1. Crear un proyecto de Firebase
-
-- En Firebase console, haz clic en Agregar proyecto y selecciona o ingresa el Nombre del proyecto, y continuar.
-
-[Firebase Consola](https://console.firebase.google.com/?pli=1)
-
-- Configura Google Analytics para tu proyecto (opcional).
-- Crear Proyecto
-
-## 2. Habilitar Cloud Storage y la base de datos 
-
-Pasos a seguir.... 
-
-
-## 3. Instalar la interfaz de línea de comandos de Firebase
-
-La interfaz de línea de comandos de Firebase (CLI) le permitirá servir la aplicación web localmente e implementar su aplicación web y las funciones de la nube.
-### 3.1 Requerimientos
+###  Requerimientos
 
 -------
 - IDE TEXT editor
@@ -89,19 +77,44 @@ node -v
 ```
 - Reposirorio 
  - Clonar el projecto
- - git clone https://github.com/....
+ 
+ - git clone https://github.com/AdrianaTiconipaGutierrez/appFirebaseAngular 
+ 
+ Si gustan es de cloud functions: 
+ - git clone https://github.com/AdrianaTiconipaGutierrez/firebaseFunctions
  - El archivo package.json ya enumera las dependencias requeridas: Firebase SDK para Cloud Functions, Firebase Admin SDK, y otros. Para instalarlos localmente, ejecute npm install desde la carpeta de functions:)
  ```
  npm install
  ```
 ```diff
 - OJO NODE JS 8 ESTA OBSOLETO PARA FIREBASE FUNCTIONS!!! ==> NODE 10
+- borrar los docs de firebase
 ```
 De forma predeterminada, Cloud Functions ejecuta su código en un tiempo de ejecución del Nodo 6. Hemos cambiado esto al tiempo de ejecución del Nodo 8 que está en Beta al especificarlo en el archivo package.json agregando
 ```
  "engines": { "node": "8" }
 ```
 -----
+
+## 1. Crear un proyecto de Firebase
+
+- En Firebase console, haz clic en Agregar proyecto y selecciona o ingresa el Nombre del proyecto, y continuar.
+
+[Firebase Consola](https://console.firebase.google.com/?pli=1)
+
+- Configura Google Analytics para tu proyecto (opcional).
+- Crear Proyecto
+
+## 2. Habilitar Cloud Storage y la base de datos 
+
+- Pasos a seguir en la CONSOLA DE FIREBASE
+- Y agregamos al proyecto clonado en **ENVIROMENT** Y **APP.MODULE.TS**
+- Una revisada al proyecto como sube a firestorage
+
+
+## 3. Instalar la interfaz de línea de comandos de Firebase
+
+La interfaz de línea de comandos de Firebase (CLI) le permitirá servir la aplicación web localmente e implementar su aplicación web y las funciones de la nube.
 
 ### 3.2 Instalamos firebase tools:
 Para instalar o actualizar la CLI, ejecute el siguiente comando npm:
@@ -116,6 +129,7 @@ Para verificar que la CLI se haya instalado correctamente, abra una consola y ej
 ```
 firebase --version
 ```
+
 ![firebase tools](https://user-images.githubusercontent.com/39227411/87824786-ec3ce800-c843-11ea-8894-c9daaf9a67ac.PNG)
 
 ```diff
