@@ -10,15 +10,17 @@
     "logs": "firebase functions:log"
   },
   "engines": {
-    "node": "10"
+    "node": "8"
   },
   "dependencies": {
     "@google-cloud/storage": "^5.1.2",
     "child-process-promise": "^2.2.1",
     "firebase-admin": "^8.6.0",
     "firebase-functions": "^3.3.0",
+    "fs-extra": "^8.0.1",
     "imagemin": "^7.0.1",
-    "imagemin-pngquant": "^9.0.0",
+    "imagemin-mozjpeg": "^8.0.0",
+    "imagemin-pngquant": "^8.0.0",
     "sharp": "^0.25.4"
   },
   "devDependencies": {

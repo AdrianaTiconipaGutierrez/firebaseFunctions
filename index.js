@@ -1,109 +1,175 @@
 const functions = require('firebase-functions');
+
+// Importamos e inicializamos el  Firebase Admin SDK para acceder a Cloud Firestore.
+
 const admin = require('firebase-admin');
 admin.initializeApp()
+// STORAGE
+
 
 const path = require('path');
 const os = require('os');
-const fs = require('fs');
+const fse = require('fs-extra');
 
-// const { Storage } = require('@google-cloud/storage');
+const imagemin = require('imagemin');
+const imageminPngquant = require('imagemin-pngquant');
+const imageminMozjpegt = require('imagemin-mozjpeg');
+
 const sharp = require('sharp');
 
-exports.onCreateStars = functions.firestore
+
+exports.convertirScoreProductoToEmojin = functions.firestore
     .document('products/{productId}')
-    .onCreate((snap, context) => {
+    .onCreate((snapshot, context) => {
 
-        const newProduct = snap.data();
-        const productId = context.params.productId;
+        const nuevoProducto = snapshot.data();
+
+        const titleProduct = nuevoProducto.titleProduct;
+        const starsProduct = nuevoProducto.starsProduct;
+        const newTitleProduct = txtToMayus(titleProduct);
+        const newStarsProduct = txtToEmojin(starsProduct);
+        console.log(`SUBIO UN NUEVO ARCHIVO  ${titleProduct}`);
 
 
-        console.log(`****ID NEW PRODUCT ${productId}`);
-        console.log(newProduct);
+        return snapshot.ref.update({ titleProduct: newTitleProduct, starsProduct: newStarsProduct });
 
-        if (newProduct) {
-            const titleProduct = newProduct.titleProduct;
-            const starsProduct = newProduct.starsProduct;
+    });
 
-            const titleProductUpper = changeToUpperCase(titleProduct);
-            const starsProductEmojin = changeToEmojin(starsProduct);
-            return snap.ref.update({ titleProduct: titleProductUpper, starsProduct: starsProductEmojin });
+
+exports.onWriteSanitizarPalabras = functions.firestore
+    .document('products/{productId}')
+    .onWrite((change, context) => {
+        //change 2 documentos. bfeore . after
+        const nuevoProducto = change.after.data();
+        console.log(nuevoProducto);
+        if (nuevoProducto) {
+            const descripcionProducto = nuevoProducto.descriptionProduct;
+            const descripcionProductoActualizado = sanitizarTexto(descripcionProducto);
+            if (descripcionProducto === descripcionProductoActualizado) {
+                console.log('Ya se ha sanitizado la palabra');
+                return null;
+            }
+            // hacemos una llamada a otro recurso en la nube
+            //updtae call nos retorna una promesa,
+            //puedo hacer mas una ves que la promesa este resuelta .then()
+            return change.after.ref.update({ descriptionProduct: descripcionProductoActualizado })
         }
         else {
             return null;
         }
+
     });
 
-//OPTIMIZAR IMAGENES
-exports.onFinalizeOptimizeImage = functions.storage
+
+// PRUEBA al subir imagen
+exports.optimizarImagen = functions.storage
     .object()
     .onFinalize(async object => {
-        const fileBucket = object.bucket; // The Storage bucket that contains the file.
-        const filePath = object.name; // File path in the bucket.
-        const contentType = object.contentType; // File content type.
-        const metageneration = object.metageneration; // Number of times metadata has been generated. New objects have a value of 1.
-        console.log(`**************FILEBUCKET: ${fileBucket} filePath: ${filePath} contentType: ${contentType} Y metageneration: ${metageneration}`);
 
-        // Exit if this is triggered on a file that is not an image.
+        const fileBucket = object.bucket; // El depósito de almacenamiento que contiene el archivo: fir-angular-94580.appspot.com 
+        const filePath = object.name; // Ruta del archivo en el bucket deposito: images/1.jpg 
+        const contentType = object.contentType; // Tipo de contenido del archivo.: image/jpeg 
+        const metageneration = object.metageneration; // Número de veces que se han generado meta
+
+        console.log('///////////////SE SUBIO UNA IMAGEN');
+
         if (!contentType.startsWith('image/')) {
-            return console.log('This is not an image.');
-        }
-        // Get the file name.
-        const fileName = path.basename(filePath);
-        console.log(`*************FILE NAME:${fileName}`)
-        // Exit if the image is already a thumbnail.
-        //or i can use if fileName.includes(thumb..)
-        if (fileName.startsWith('thumb_')) {
-            return console.log('It is already a Thumbnail.');
+            console.log('No es una imagen');
+            return null;
         }
 
-        // Download file from bucket.
-        //OR i can use const bucket = storage.bucket(fileBucket);
-        //const file = bucket.file(filePath);
-        const bucket = admin.storage().bucket(fileBucket);
-        const tempFilePath = path.join(os.tmpdir(), fileName);///tmp/2.png
-        console.log(`************** bucket: ${bucket} tempFilePath: ${tempFilePath}`);
-        const metadata = {
-            contentType: contentType,
-        };
-        await bucket.file(filePath).download({ destination: tempFilePath });
-        console.log('Image downloaded locally to', tempFilePath);
-        // Generate a thumbnail using ImageMagick.
-        // await spawn('convert', [tempFilePath, '-thumbnail', '200x200>', tempFilePath]);
-        // console.log('Thumbnail created at', tempFilePath);
+        // Obtenemos el nombre del archivo. 
+        const fileName = path.basename(filePath);  //1.jpg
+        //Extension del archivo
+        const fileExtension = path.extname(filePath);  //.jpg
 
-        // We add a 'thumb_' prefix to thumbnails file name. That's where we'll upload the thumbnail.
-        const thumbFileName = `thumb_${fileName}`;
-        const tempThumbFilePath = path.join(os.tmpdir(), thumbFileName);
-        const thumbFilePath = path.join(path.dirname(filePath), thumbFileName);
+        // Salir si la imagen ya es una miniatura.
 
-        //we resize the image with sharp
-        await sharp(tempFilePath)
-            .resize(500)
-            .toFile(tempThumbFilePath);
-        // we optimize the image in the temporary route
+        if (fileName.startsWith('thumbnail_')) {
+            console.log('*******La imagen ya ha sido optimizada');
+            return null;
+        }
+        // Descargar archivo del bucket deposito
 
-        console.log('optimize jpg and png, done!');
-        await bucket.upload(tempThumbFilePath, {
-            destination: thumbFilePath,
-            metadata: metadata,
+        const bucket = admin.storage().bucket(fileBucket); // Objeto
+        const file = bucket.file(filePath); // Objeto
+
+
+        // Capturamos los metadatos del archivo subido al firebase Storage
+        const [data] = await file.getMetadata();//Array metadata
+
+        if (data.metadata.optimized) {
+            console.log(`Imagen ya ha sido optimizada`);
+            return null;
+        }
+
+
+
+        //Generamos un directorio temporal 
+        const directoryTemporary = path.join(os.tmpdir(), 'Imagenes'); // /tmp/Imagenes
+
+        //Generamos la ruta temporal de la imagen 
+        const pathTempFile = path.join(directoryTemporary, fileName);// /tmp/Imagenes/1.jpg 
+
+        //  Aseguramos que se creo el archivo y si  no lo crea
+
+        await fse.ensureDir(directoryTemporary).then(console.log('++++++SI CREO EL ARCHIVO'));
+
+        await bucket.file(filePath).download({ destination:  pathTempFile}).then(console.log('---+++SI DESACARGO'));
+
+        // Generamos un nuevo nombre del archivo que sera modificado. Agregamos un prefijo 'thumbnail_'
+        const thumbFileName=`thumbnail_${fileName}`; // thumbnail_1.jpg 
+        
+        // Generamos ruta Temporal del nuevo archivo
+        const pathTempFileThumb= path.join(directoryTemporary, thumbFileName);// /tmp/Imagenes/thumbnail_1.jpg 
+
+        await sharp(pathTempFile)  ///tmp/Imagenes/1.jpg
+             .resize(500)
+             .toFile(pathTempFileThumb); // /tmp/Imagenes/thumbnail_1.jpg 
+
+                 //SUBIMOS A FIREBASE STORAGE
+         
+        // Generamos la ruta de la imagen que subiremos a Storage 
+        const filePathThumb = path.join(path.dirname(filePath), thumbFileName); //  images/thumbnail_1.jpg 
+        
+
+        const x=  await imagemin([`${directoryTemporary}/*.{jpg,png,jpeg}`],{
+            destination: directoryTemporary,
+            plugins: [
+                imageminMozjpegt({quality: 50}),
+                imageminPngquant([0.3, 0.5])
+            ]
         });
-        // Once the thumbnail has been uploaded delete the local file to free up disk space.
-        return fs.unlinkSync(tempFilePath);
 
+
+
+
+
+        //Subiendo la miniatura.
+        await bucket.upload(pathTempFileThumb, {
+            destination: filePathThumb,
+            metadata: {metadata: {optimized: true}},
+        });
+            
+        return fse.remove(directoryTemporary);
     });
 
-function modif(text) {
-    const x = '1234';
-    const y = text.replace(x, "cheese").toUpperCase();
+
+
+
+
+
+function sanitizarTexto(text) {
+    const x = 'fuck';
+    const y = text.replace(x, "😘");
     return y;
 }
 
-
-function changeToUpperCase(text) {
+function txtToMayus(text) {
     return text.toUpperCase();
-}
 
-function changeToEmojin(text) {
+}
+function txtToEmojin(text) {
     cantStars = text.match(/[0-9]+/g)[0];
     cantStars = parseInt(cantStars);
     stars = '';
@@ -112,4 +178,3 @@ function changeToEmojin(text) {
     }
     return text.replace(/[0-9]+/g, stars);
 }
-
